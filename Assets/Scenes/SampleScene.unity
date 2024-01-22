@@ -8358,7 +8358,7 @@ MonoBehaviour:
   target: {fileID: 2051104968}
   offset: {x: 0, y: 0, z: 0}
   sensitivity: 3
-  limit: 80
+  limit: 90
   zoom: 0.25
   zoomMax: 35
   zoomMin: 15

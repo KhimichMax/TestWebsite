@@ -9,7 +9,7 @@ public class CameraRotateAround : MonoBehaviour
     public Transform target;
     public Vector3 offset;
     public float sensitivity = 3; // чувствительность мышки
-    public float limit = 80; // ограничение вращения по Y
+    public float limit = 90; // ограничение вращения по Y
     public float zoom = 0.25f; // чувствительность при увеличении, колесиком мышки
     public float zoomMax = 10; // макс. увеличение
     public float zoomMin = 3; // мин. увеличение
@@ -20,7 +20,13 @@ public class CameraRotateAround : MonoBehaviour
         limit = Mathf.Abs(limit);
         if(limit > 90) limit = 90;
         offset = new Vector3(offset.x, offset.y, -Mathf.Abs(zoomMax)/2);
-        transform.position = target.position + offset;
+        var rotation = Quaternion.Euler(new Vector3(90, -90,
+            transform.localEulerAngles.z));
+        transform.position = rotation
+            * offset + target.position;
+        X = rotation.eulerAngles.x;
+        Y = -90;
+        Debug.Log($"{X}, {Y}");
     }
 
     void Update ()

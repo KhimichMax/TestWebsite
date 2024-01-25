@@ -63,6 +63,7 @@ public class ShadowWalls : MonoBehaviour
     {
         for (int i = 0; i < arr.Length; i++)
         {
+            //Вынести GetComponent в Start
             var renderer = arr[i].gameObject.GetComponent<Renderer>();
             _color = renderer.material.color;
             if (_color.a > 0.08f)
@@ -77,6 +78,7 @@ public class ShadowWalls : MonoBehaviour
     {
         for (int i = 0; i < arr.Length; i++)
         {
+            //Вынести GetComponent в Start
             var renderer = arr[i].gameObject.GetComponent<Renderer>();
             _color = renderer.material.color;
             if (_color.a != 1f)

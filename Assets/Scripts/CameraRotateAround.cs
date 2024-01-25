@@ -10,8 +10,12 @@ public class CameraRotateAround : MonoBehaviour
     public float zoom = 0.25f; // чувствительность при увеличении, колесиком мышки
     public float zoomMax = 10; // макс. увеличение
     public float zoomMin = 3; // мин. увеличение
-    private static float X, Y;
-
+    private static float X, Y, mouseX, mouseY;
+    private bool _isMoving;
+    private bool _step;
+    private float _speedMove = 0.5f;
+    private float _timeClick = 0.05f;
+    private Vector3 _targetPosition;
     void Start () 
     {
         limit = Mathf.Abs(limit);
@@ -25,7 +29,7 @@ public class CameraRotateAround : MonoBehaviour
         Y = -90;
     }
 
-    void Update ()
+    private void RotateCameraOutside()
     {
         if(Input.GetAxis("Mouse ScrollWheel") > 0) offset.z += zoom;
         else if(Input.GetAxis("Mouse ScrollWheel") < 0) offset.z -= zoom;
@@ -39,6 +43,60 @@ public class CameraRotateAround : MonoBehaviour
             transform.localEulerAngles = new Vector3(-Y, X, 0);
         }
         transform.position = transform.localRotation * offset + target.position;
+    }
+
+    private void TransformCameraInside()
+    {
+        transform.position = TpInside.PositionBtn.position;
+    }
+
+    private void SetTargetPosition()
+    {
+        _targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Debug.Log(_targetPosition);
+    }
+
+    private void RotateCameraInside()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            _timeClick -= Time.deltaTime;
+            if (_timeClick <= 0)
+            {
+                SetTargetPosition();
+                _timeClick = 0.05f;
+            }
+            else
+            {
+                /*float mouseX = Input.GetAxis(("Mouse X")) * (sensitivity + 600f) * Time.deltaTime;
+           float mouseY = Input.GetAxis(("Mouse Y")) * (sensitivity + 600f) * Time.deltaTime;
+
+           xRotation -= mouseY;
+           xRotation = Mathf.Clamp(xRotation, -90, 90);
+           transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);  */ 
+                mouseX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * (sensitivity - 1);
+                mouseY += Input.GetAxis("Mouse Y") * (sensitivity - 1);
+                mouseY = Mathf.Clamp (mouseY, -90, 90);
+                transform.localEulerAngles = new Vector3(-mouseY, mouseX, 0);
+            }
+        }
+        
+    }
+
+    void Update ()
+    {
+        if (!TpInside.Flag)
+        {
+            RotateCameraOutside();
+        }else if (TpInside.Flag)
+        {
+            if (!_step)
+            {
+                TransformCameraInside();
+                _step = true;
+            }
+            RotateCameraInside();
+        }
     }
 
     public static float X1

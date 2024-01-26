@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class CameraRotateAround : MonoBehaviour
 {
+    [SerializeField] private Transform _pointer;
+    [SerializeField] private float _heightCameraInside;
     public Transform target;
     public Vector3 offset;
     public float sensitivity = 3; // чувствительность мышки
@@ -11,11 +13,10 @@ public class CameraRotateAround : MonoBehaviour
     public float zoomMax = 10; // макс. увеличение
     public float zoomMin = 3; // мин. увеличение
     private static float X, Y, mouseX, mouseY;
-    private bool _isMoving;
     private bool _step;
-    private float _speedMove = 0.5f;
-    private float _timeClick = 0.05f;
-    private Vector3 _targetPosition;
+    private Vector3 _last;
+    private Vector3 _new;
+    
     void Start () 
     {
         limit = Mathf.Abs(limit);
@@ -50,49 +51,58 @@ public class CameraRotateAround : MonoBehaviour
         transform.position = TpInside.PositionBtn.position;
     }
 
-    private void SetTargetPosition()
-    {
-        _targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Debug.Log(_targetPosition);
-    }
-
     private void RotateCameraInside()
     {
-        if (Input.GetMouseButton(0))
+        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1));
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
         {
-            _timeClick -= Time.deltaTime;
-            if (_timeClick <= 0)
-            {
-                SetTargetPosition();
-                _timeClick = 0.05f;
-            }
-            else
-            {
-                /*float mouseX = Input.GetAxis(("Mouse X")) * (sensitivity + 600f) * Time.deltaTime;
-           float mouseY = Input.GetAxis(("Mouse Y")) * (sensitivity + 600f) * Time.deltaTime;
-
-           xRotation -= mouseY;
-           xRotation = Mathf.Clamp(xRotation, -90, 90);
-           transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);  */ 
-                mouseX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * (sensitivity - 1);
-                mouseY += Input.GetAxis("Mouse Y") * (sensitivity - 1);
-                mouseY = Mathf.Clamp (mouseY, -90, 90);
-                transform.localEulerAngles = new Vector3(-mouseY, mouseX, 0);
-            }
+            _pointer.position = hit.point;
         }
         
+        if (Input.GetMouseButton(0))
+        {
+            /*float mouseX = Input.GetAxis(("Mouse X")) * (sensitivity + 600f) * Time.deltaTime;
+       float mouseY = Input.GetAxis(("Mouse Y")) * (sensitivity + 600f) * Time.deltaTime;
+
+       xRotation -= mouseY;
+       xRotation = Mathf.Clamp(xRotation, -90, 90);
+       transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);  */ 
+            
+            mouseX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * (sensitivity - 1);
+            mouseY += Input.GetAxis("Mouse Y") * (sensitivity - 1);
+            mouseY = Mathf.Clamp (mouseY, -90, 90);
+            transform.localEulerAngles = new Vector3(-mouseY, mouseX, 0);
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            _last = _pointer.position;
+        }
+        
+        if (Input.GetMouseButtonUp(0))
+        {
+            _new = _pointer.position;
+            if (_last == _new)
+            {
+                _new.y = _heightCameraInside;
+                transform.position = _new;
+            }
+        }
     }
 
     void Update ()
     {
         if (!TpInside.Flag)
         {
+            _pointer.transform.gameObject.SetActive(false);
             RotateCameraOutside();
         }else if (TpInside.Flag)
         {
             if (!_step)
             {
                 TransformCameraInside();
+                _pointer.transform.gameObject.SetActive(true);
                 _step = true;
             }
             RotateCameraInside();

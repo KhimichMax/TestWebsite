@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ShadowWalls : MonoBehaviour
@@ -15,7 +12,7 @@ public class ShadowWalls : MonoBehaviour
     
     private void ShadowWallsLookAtCam()
     {
-        if (CameraRotateAround.Y1 >= -50)
+        if (CameraRotateAround.Y1 >= -69)
         {
             if (CameraRotateAround.X1 <= 57 || CameraRotateAround.X1 >= 303)
             {
@@ -54,6 +51,10 @@ public class ShadowWalls : MonoBehaviour
             }
         }
         else
+        {
+            Visible(_allWalls);
+        }
+        if (TpInside.Flag)
         {
             Visible(_allWalls);
         }

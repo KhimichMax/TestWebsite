@@ -9,9 +9,12 @@ public class ShadowWalls : MonoBehaviour
     [SerializeField] private GameObject[] _allWalls;
 
     private Color _color;
+    private bool flag;
     
     private void ShadowWallsLookAtCam()
     {
+        flag = TpInside.Flag;
+        
         if (CameraRotateAround.Y1 >= -69)
         {
             if (CameraRotateAround.X1 <= 57 || CameraRotateAround.X1 >= 303)
@@ -50,12 +53,14 @@ public class ShadowWalls : MonoBehaviour
                 Visible(_leftWalls);
             }
         }
-        else
+        else if (CameraRotateAround.Y1 <= -70)
         {
             Visible(_allWalls);
         }
-        if (TpInside.Flag)
+        // Сомнительно, но окэй... 
+        if(flag)
         {
+            CameraRotateAround.Y1 = -90;
             Visible(_allWalls);
         }
     }

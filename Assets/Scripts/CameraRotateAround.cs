@@ -62,13 +62,6 @@ public class CameraRotateAround : MonoBehaviour
         
         if (Input.GetMouseButton(0))
         {
-            /*float mouseX = Input.GetAxis(("Mouse X")) * (sensitivity + 600f) * Time.deltaTime;
-       float mouseY = Input.GetAxis(("Mouse Y")) * (sensitivity + 600f) * Time.deltaTime;
-
-       xRotation -= mouseY;
-       xRotation = Mathf.Clamp(xRotation, -90, 90);
-       transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);  */ 
-            
             mouseX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * (sensitivity - 1);
             mouseY += Input.GetAxis("Mouse Y") * (sensitivity - 1);
             mouseY = Mathf.Clamp (mouseY, -90, 90);
@@ -117,5 +110,6 @@ public class CameraRotateAround : MonoBehaviour
     public static float Y1
     {
         get => Y;
+        set => Y = value;
     }
 }

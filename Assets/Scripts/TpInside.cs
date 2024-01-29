@@ -10,7 +10,7 @@ public class TpInside : MonoBehaviour
         _positionBtn = GetComponent<Transform>();
     }
 
-    private void OnPressButton()
+    public void OnPressButton()
     {
         if (!flag)
         {

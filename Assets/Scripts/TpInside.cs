@@ -16,6 +16,7 @@ public class TpInside : MonoBehaviour
         {
             flag = true;
             _positionBtn.position = gameObject.transform.position;
+            _positionBtn.rotation = gameObject.transform.rotation;
         }else if (flag)
         {
             flag = false;

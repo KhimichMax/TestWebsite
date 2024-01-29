@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 
@@ -48,7 +49,8 @@ public class CameraRotateAround : MonoBehaviour
 
     private void TransformCameraInside()
     {
-        transform.position = TpInside.PositionBtn.position;
+        transform.DOMove(TpInside.PositionBtn.position, 1f);
+        transform.DORotate(TpInside.PositionBtn.localRotation.eulerAngles, 1f);
     }
 
     private void RotateCameraInside()
@@ -79,7 +81,7 @@ public class CameraRotateAround : MonoBehaviour
             if (_last == _new)
             {
                 _new.y = _heightCameraInside;
-                transform.position = _new;
+                transform.DOMove(_new, 1f);
             }
         }
     }
